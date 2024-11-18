@@ -9,7 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        CameraView()
+        //CameraView()
+        NavigationSplitView {
+            NavigationLink(destination: ScannerView()) {
+                VStack {
+                    Text("Welcome to BinBot!")
+                        .font(.subheadline)
+                    
+                }.navigationTitle("Home Page")
+            }
+        } detail: {
+            Text("Click the text")
+        }
     }
 }
 
