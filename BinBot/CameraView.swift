@@ -8,14 +8,36 @@
 import SwiftUI
 
 struct CameraView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let imagePicker = UIImagePickerController()
-        imagePicker.sourceType = .camera
-        return imagePicker
+    var onImagePicked: (UIImage) -> Void
+    
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let onImagePicked: (UIImage) -> Void
+        
+        init(onImagePicked: @escaping (UIImage) -> Void) {
+            self.onImagePicked = onImagePicked
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            guard let image = info[.originalImage] as? UIImage else { return }
+            onImagePicked(image)
+        }
     }
     
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+            let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .camera
+            
+            imagePicker.delegate = context.coordinator
+            
+            return imagePicker
+        }
+        
+        func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
+            
+        }
+        
+        func makeCoordinator() -> Coordinator {
+            Coordinator(onImagePicked: onImagePicked)
+        }
     }
-}
 

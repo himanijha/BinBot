@@ -94,6 +94,8 @@
 			);
 			mainGroup = 8CE3FD3C2CD9CDBD004A5DAE;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8CE3FD462CD9CDBD004A5DAE /* Products */;
 			projectDirPath = "";
@@ -252,7 +254,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BinBot/Preview Content\"";
-				DEVELOPMENT_TEAM = R7KCXZXV2L;
+				DEVELOPMENT_TEAM = FVTG4K4SK4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan trash";
@@ -282,7 +284,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BinBot/Preview Content\"";
-				DEVELOPMENT_TEAM = R7KCXZXV2L;
+				DEVELOPMENT_TEAM = FVTG4K4SK4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan trash";
