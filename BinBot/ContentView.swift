@@ -9,17 +9,32 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        //CameraView()
-        NavigationSplitView {
-            NavigationLink(destination: ScannerView()) {
-                VStack {
-                    Text("Welcome to BinBot!")
-                        .font(.subheadline)
-                    
-                }.navigationTitle("Home Page")
+        NavigationStack {
+            VStack {
+                Text("Welcome to BinBot!")
+                    .foregroundColor(.white)
+                    .font(.subheadline)
+                    .padding()
+
+                NavigationLink(destination: ScannerView()) {
+                    Text("Take Photo")
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.purple)
+                        .cornerRadius(8)
+                }
+                .padding()
             }
-        } detail: {
-            Text("Click the text")
+            .navigationTitle("Home Page")
+            /*.toolbar {
+                // Custom toolbar item to center the title
+                ToolbarItem(placement: .principal) {
+                    Text("Home Page")
+                        .font(.headline)
+                        .foregroundColor(.black)
+                }
+            }*/
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

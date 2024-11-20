@@ -16,6 +16,7 @@ struct ResultsView: View {
     @State private var probabilities: [String: Double] = [:]
     //var category: String = predict(photo: selectedImage)
     @State private var showShareSheet = false // State to control the display of the ShareSheet
+    @State private var showPopup = false
 
     var body: some View {
         NavigationView {
@@ -39,13 +40,17 @@ struct ResultsView: View {
                         .frame(width: 20, height: 20)
                         .padding(3.0)
                     Text("\(category)")
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                         .font(.title)
                         .fontWeight(.bold)
                 }
                 .padding(8.0)
-                .background(Color.gray.opacity(0.2))
+                .background(Color.white.opacity(0.2))
                 .cornerRadius(20)
+                .onTapGesture {
+                    // Set showPopup to true when the HStack is tapped
+                    showPopup = true
+                }
 
                 // Navigation Buttons Section
                 HStack(spacing: 30) {
@@ -84,6 +89,102 @@ struct ResultsView: View {
             }
             .padding()
             .navigationTitle("Results")
+            /*.toolbar {
+                // Custom toolbar item to center the title
+                ToolbarItem(placement: .principal) {
+                    Text("Results")
+                        .font(.headline)
+                        .foregroundColor(.black)
+                }
+            }*/
+            .navigationBarBackButtonHidden(true)
+            .blur(radius: showPopup ? 10 : 0) // Blur the background when popup is shown
+            .overlay(
+                // Popup overlay
+                ZStack {
+                    if showPopup {
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                // Hide the popup when tapping outside of it
+                                showPopup.toggle()
+                            }
+                        VStack {
+                            HStack {
+                                Text("What is")
+                                    .font(.title)
+                                    .foregroundColor(.black)
+                                HStack {
+                                    Circle()
+                                        .fill(getColor(for: category))  // Call the helper function to get the color
+                                        .frame(width: 20, height: 20)
+                                        .padding(2.0)
+                                    Text("\(category)")
+                                        .foregroundColor(.black)
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .padding(5.0)
+                                }
+                                .padding(8.0)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(20)
+                                
+                                Text("?")
+                                    .font(.title)
+                                    .foregroundColor(.black)
+                            }
+                            Text(getDescription(for: category))
+                                .font(.caption)
+                                .foregroundColor(.black)
+                                .padding()
+                            Text("Similar Objects")
+                                .font(.subheadline)
+                                .foregroundColor(.black)
+                                .fontWeight(.bold)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            HStack {
+                                //Spacer()
+                                Text("#Hashtag")
+                                    .foregroundColor(.black)
+                                    .font(.subheadline)
+                                    .padding(10.0)
+                                    .background(Color.gray)
+                                    .cornerRadius(10)
+                                Text("#Hashtag")
+                                    .foregroundColor(.black)
+                                    .font(.subheadline)
+                                    .padding(10.0)
+                                    .background(Color.gray)
+                                    .cornerRadius(10)
+                                Text("#Hashtag")
+                                    .foregroundColor(.black)
+                                    .font(.subheadline)
+                                    .padding(10.0)
+                                    .background(Color.gray)
+                                    .cornerRadius(10)
+                            }
+                            .padding()
+                            
+                            Button(action: {
+                                // Action to perform when the button is tapped
+                                openExternalLink(urlString: getLink(for: category))
+                            }) {
+                                // Define the button's label
+                                Text("Learn More")
+                                    .padding()
+                                    .background(getColor(for: category))
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                            }
+                            
+                        }
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                    }
+                }
+            )
             .onAppear {
                 // Call the predict function when the view appears
                 Task {
@@ -98,6 +199,8 @@ struct ResultsView: View {
                     }
                 }
             }
+            //.background(Color.white)
+            //.ignoresSafeArea()
         }
     }
 }
@@ -136,6 +239,39 @@ func getColor(for category: String) -> Color {
         return Color.blue  // Recycling is blue
     default:
         return Color.purple  // Default to gray if no match is found
+    }
+}
+
+func getDescription(for category: String) -> String {
+    switch category {
+    case "Trash":
+        return "A landfill item is any object that cannot be effectively recycled or composted and is therefore disposed of in a landfill. These items, which include non-recyclable plastics, certain textiles, and contaminated materials, accumulate in landfills where they can persist for long periods, contributing to environmental pollution and space consumption."
+    case "Compost":
+        return "A compostable object is any item that can decompose naturally into nutrient-rich soil under controlled conditions, typically involving organic materials like food scraps, yard waste, and certain biodegradable products. Composting these items helps reduce waste, enrich soil, and decrease methane emissions from landfills."
+    case "Recycling":
+        return "A recyclable object is any item that can be reprocessed into new materials or products, reducing raw resource consumption and waste. This includes materials like paper, glass, metals, and certain plastics, which can be broken down and reconstituted through industrial processes."
+    default:
+        return "Please retake the photo."
+    }
+}
+
+func openExternalLink(urlString: String) {
+    if let url = URL(string: urlString) {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+}
+
+//Fix Links
+func getLink(for category: String) -> String {
+    switch category {
+    case "Trash":
+        return "https://lacity.gov/residents/trash-recycling"
+    case "Compost":
+        return "https://www.nrdc.org/stories/composting-101"
+    case "Recycling":
+        return "https://how2recycle.info/"
+    default:
+        return ""
     }
 }
 
