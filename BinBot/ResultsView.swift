@@ -111,6 +111,20 @@ struct ResultsView: View {
                             }
                         VStack {
                             HStack {
+                                Spacer()
+                                Button(action: {
+                                    // Close the popup
+                                    showPopup.toggle()
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .resizable()
+                                        .frame(width: 30, height: 30)
+                                        .foregroundColor(.black)
+                                        .padding(8)
+                                }
+                            }
+
+                            HStack {
                                 Text("What is")
                                     .font(.title)
                                     .foregroundColor(.black)
@@ -125,7 +139,6 @@ struct ResultsView: View {
                                         .fontWeight(.bold)
                                         .padding(5.0)
                                 }
-                                .padding(8.0)
                                 .background(Color.gray.opacity(0.2))
                                 .cornerRadius(20)
                                 
@@ -133,11 +146,9 @@ struct ResultsView: View {
                                     .font(.title)
                                     .foregroundColor(.black)
                             }
-                            Text(getDescription(for: category))
-                                .font(.caption)
-                                .foregroundColor(.black)
+                            getDescription(for: category)
                                 .padding()
-                            Text("Similar Objects")
+                            /*Text("Similar Objects")
                                 .font(.subheadline)
                                 .foregroundColor(.black)
                                 .fontWeight(.bold)
@@ -164,7 +175,7 @@ struct ResultsView: View {
                                     .background(Color.gray)
                                     .cornerRadius(10)
                             }
-                            .padding()
+                            .padding()*/
                             
                             Button(action: {
                                 // Action to perform when the button is tapped
@@ -211,7 +222,7 @@ struct ResultsView: View {
 
 //Takes name of photo as input
 func predict(photo: UIImage) throws -> String {
-    let model = try RecyclingModel()  // Assuming you have a model named RecyclingModel
+    let model = try BinBot()  // Assuming you have a model named RecyclingModel
     var classificationLabel = ""
     
     // Image Preprocessing: Resize the image and convert it to a CVPixelBuffer
@@ -235,25 +246,126 @@ func getColor(for category: String) -> Color {
         return Color.gray  // Landfill is gray
     case "Compost":
         return Color.green  // Compost is green
-    case "Recycling":
+    case "Recyclable":
         return Color.blue  // Recycling is blue
     default:
         return Color.purple  // Default to gray if no match is found
     }
 }
 
-func getDescription(for category: String) -> String {
-    switch category {
-    case "Trash":
-        return "A landfill item is any object that cannot be effectively recycled or composted and is therefore disposed of in a landfill. These items, which include non-recyclable plastics, certain textiles, and contaminated materials, accumulate in landfills where they can persist for long periods, contributing to environmental pollution and space consumption."
-    case "Compost":
-        return "A compostable object is any item that can decompose naturally into nutrient-rich soil under controlled conditions, typically involving organic materials like food scraps, yard waste, and certain biodegradable products. Composting these items helps reduce waste, enrich soil, and decrease methane emissions from landfills."
-    case "Recycling":
-        return "A recyclable object is any item that can be reprocessed into new materials or products, reducing raw resource consumption and waste. This includes materials like paper, glass, metals, and certain plastics, which can be broken down and reconstituted through industrial processes."
-    default:
-        return "Please retake the photo."
+func getDescription(for category: String) -> some View {
+    VStack(alignment: .leading, spacing: 10) {
+        switch category {
+        case "Trash":
+            VStack(alignment: .leading, spacing: 10) {
+                Text("• A ").foregroundColor(.black) +
+                Text("landfill item ").foregroundColor(.black).bold() +
+                Text("is any object that cannot be effectively recycled or composted and is therefore disposed of in a landfill.")
+                    .foregroundColor(.black)
+                Text("• These items include non-recyclable plastics, certain textiles, and contaminated materials.").foregroundColor(.black)
+                Text("• They accumulate in landfills where they can persist for long periods, contributing to environmental pollution and space consumption.").foregroundColor(.black)
+                Text("Similar Objects")
+                    .font(.subheadline)
+                    .foregroundColor(.black)
+                    .fontWeight(.bold)
+                    .padding(.top)
+                HStack {
+                    Text("#PlasticBottles")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(10)
+                    Text("#PaperTowels")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(10)
+                    Text("#Electronics")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(10)
+                }.foregroundColor(.black)
+            }
+        case "Compost":
+            VStack(alignment: .leading, spacing: 10) {
+                Text("• A ").foregroundColor(.black) +
+                Text("compostable object ").foregroundColor(.black).bold() +
+                Text("is any item that can decompose naturally into nutrient-rich soil under controlled conditions.")
+                    .foregroundColor(.black)
+                Text("• This typically involves organic materials like ").foregroundColor(.black) +
+                Text("food scraps, yard waste, and certain biodegradable products.").foregroundColor(.black).bold()
+                Text("• Composting these items helps reduce waste, enrich soil, and decrease methane emissions from landfills.").foregroundColor(.black)
+                Text("Similar Objects")
+                    .font(.subheadline)
+                    .foregroundColor(.black)
+                    .fontWeight(.bold)
+                    .padding(.top)
+                HStack {
+                    Text("#FruitPeels")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.green.opacity(0.2))
+                        .cornerRadius(10)
+                    Text("#VegetableScraps")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.green.opacity(0.2))
+                        .cornerRadius(10)
+                    Text("#CoffeeGrounds")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.green.opacity(0.2))
+                        .cornerRadius(10)
+                }.foregroundColor(.black)
+            }
+        case "Recyclable":
+            VStack(alignment: .leading, spacing: 10) {
+                Text("• A ").foregroundColor(.black) +
+                Text("recyclable object ").foregroundColor(.black).bold() +
+                Text("is any item that can be reprocessed into new materials or products, reducing raw resource consumption and waste.")
+                    .foregroundColor(.black)
+                Text("• This includes materials like ").foregroundColor(.black) +
+                Text("paper, glass, metals, and certain plastics.").foregroundColor(.black).bold()
+                Text("• These materials can be broken down and reconstituted through industrial processes.").foregroundColor(.black)
+                Text("Similar Objects")
+                    .font(.subheadline)
+                    .foregroundColor(.black)
+                    .fontWeight(.bold)
+                    .padding(.top)
+                HStack {
+                    Text("#Paper")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(10)
+                    Text("#GlassBottles")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(10)
+                    Text("#MetalCans")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .padding(10.0)
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(10)
+                }.foregroundColor(.black)
+            }
+        default:
+            Text("Please retake the photo.")
+        }
     }
 }
+
 
 func openExternalLink(urlString: String) {
     if let url = URL(string: urlString) {
@@ -276,7 +388,7 @@ func getLink(for category: String) -> String {
 }
 
 func getProbabilities(photo: UIImage) async throws -> [String: Double] {
-    let model = try RecyclingModel()
+    let model = try BinBot()
     var probabilities: [String: Double] = [:]
     
     // Image Preprocessing: Resize the image and convert it to a CVPixelBuffer
