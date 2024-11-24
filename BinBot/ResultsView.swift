@@ -236,7 +236,8 @@ func predict(photo: UIImage) throws -> String {
     if let output = output {
         classificationLabel = output.target
     }
-    
+    print("Predicted category: \(classificationLabel)")
+    print(output?.targetProbability)
     return classificationLabel
 }
 
