@@ -5,16 +5,12 @@
 //  Created by Lian Elsa Linton on 11/17/24.
 //
 
-import SwiftUICore
-import UIKit
 import SwiftUI
-import Charts
 
 struct ResultsView: View {
     var selectedImage: UIImage // Image passed from ScannerView
     @State private var category: String = ""
     @State private var probabilities: [String: Double] = [:]
-    //var category: String = predict(photo: selectedImage)
     @State private var showShareSheet = false // State to control the display of the ShareSheet
     @State private var showPopup = false
 
@@ -29,10 +25,6 @@ struct ResultsView: View {
                     .cornerRadius(10)
                     .padding()
                 
-                /*PieChartView(probabilities: probabilities)
-                    .frame(height: 300)
-                    .padding()*/
-
                 // Category Section
                 HStack {
                     Circle()
@@ -45,7 +37,8 @@ struct ResultsView: View {
                         .fontWeight(.bold)
                 }
                 .padding(8.0)
-                .background(Color.white.opacity(0.2))
+                //.background(Color.white.opacity(0.2))
+                .background(Color.gray.opacity(0.8))
                 .cornerRadius(20)
                 .onTapGesture {
                     // Set showPopup to true when the HStack is tapped
@@ -88,16 +81,8 @@ struct ResultsView: View {
                 }
             }
             .padding()
-            .navigationTitle("Results")
-            /*.toolbar {
-                // Custom toolbar item to center the title
-                ToolbarItem(placement: .principal) {
-                    Text("Results")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                }
-            }*/
-            .navigationBarBackButtonHidden(true)
+            .navigationBarBackButtonHidden(true) // Explicitly hide back button
+            .navigationBarItems(leading: EmptyView()) // Optionally remove the back button by adding an empty view
             .blur(radius: showPopup ? 10 : 0) // Blur the background when popup is shown
             .overlay(
                 // Popup overlay
@@ -148,47 +133,16 @@ struct ResultsView: View {
                             }
                             getDescription(for: category)
                                 .padding()
-                            /*Text("Similar Objects")
-                                .font(.subheadline)
-                                .foregroundColor(.black)
-                                .fontWeight(.bold)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            HStack {
-                                //Spacer()
-                                Text("#Hashtag")
-                                    .foregroundColor(.black)
-                                    .font(.subheadline)
-                                    .padding(10.0)
-                                    .background(Color.gray)
-                                    .cornerRadius(10)
-                                Text("#Hashtag")
-                                    .foregroundColor(.black)
-                                    .font(.subheadline)
-                                    .padding(10.0)
-                                    .background(Color.gray)
-                                    .cornerRadius(10)
-                                Text("#Hashtag")
-                                    .foregroundColor(.black)
-                                    .font(.subheadline)
-                                    .padding(10.0)
-                                    .background(Color.gray)
-                                    .cornerRadius(10)
-                            }
-                            .padding()*/
-                            
                             Button(action: {
                                 // Action to perform when the button is tapped
                                 openExternalLink(urlString: getLink(for: category))
                             }) {
-                                // Define the button's label
                                 Text("Learn More")
                                     .padding()
                                     .background(getColor(for: category))
                                     .foregroundColor(.white)
                                     .cornerRadius(8)
                             }
-                            
                         }
                         .padding()
                         .background(Color.white)
@@ -210,11 +164,10 @@ struct ResultsView: View {
                     }
                 }
             }
-            //.background(Color.white)
-            //.ignoresSafeArea()
         }
     }
 }
+
 
 #Preview {
     ResultsView(/*category: "Recycling",*/ selectedImage: UIImage(named: "paper")!)
