@@ -15,167 +15,170 @@ struct ResultsView: View {
     @State private var probabilities: [String: Double] = [:]
     @State private var showShareSheet = false // State to control the display of the ShareSheet
     @State private var showPopup = false
-
+    
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                // Display the selected image
+        VStack(spacing: 20) {
+            // Display the selected image
+            ZStack(alignment: .bottom) {
                 Image(uiImage: selectedImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 300, height: 350)
-                    .cornerRadius(10)
+                    .cornerRadius(16)
+                    .padding(8)
+                    .background(getColor(for: category))
+                    .cornerRadius(16)
+                    .frame(width: 350, height: 500)
                     .padding()
                 
-                // Category Section
                 HStack {
                     Circle()
                         .fill(getColor(for: category))  // Call the helper function to get the color
                         .frame(width: 20, height: 20)
-                        .padding(3.0)
                     Text("\(category)")
                         .foregroundColor(.white)
                         .font(.title)
                         .fontWeight(.bold)
                 }
-                .padding(8.0)
+                .padding(12)
                 //.background(Color.white.opacity(0.2))
-                .background(Color.gray.opacity(0.8))
+                .background(getColor(for: category).opacity(0.8))
                 .cornerRadius(20)
                 .onTapGesture {
                     // Set showPopup to true when the HStack is tapped
                     showPopup = true
                 }
-
-                // Navigation Buttons Section
-                HStack(spacing: 30) {
-                    Button(action: {
-                        onHome()
-                    }) {
-                        Text("Home")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.orange)
-                            .cornerRadius(8)
-                    }
-                    .sheet(isPresented: $showShareSheet) {
-                        // Display ShareSheet with the selected image
-                        ShareSheet(items: [selectedImage])
-                    }
-                    
-                    Button(action: {
-                        onRetake()
-                    }) {
-                        Text("Retake Image")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.orange)
-                            .cornerRadius(8)
-                    }
-                    .sheet(isPresented: $showShareSheet) {
-                        // Display ShareSheet with the selected image
-                        ShareSheet(items: [selectedImage])
-                    }
-
-                    // Share Button
-                    Button(action: {
-                        // Trigger the ShareSheet when the Share button is tapped
-                        showShareSheet.toggle()
-                    }) {
-                        Text("Share")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.orange)
-                            .cornerRadius(8)
-                    }
-                    .sheet(isPresented: $showShareSheet) {
-                        // Display ShareSheet with the selected image
-                        ShareSheet(items: [selectedImage])
-                    }
+                .alignmentGuide(.bottom) { _ in
+                    100
                 }
             }
-            .padding()
-            .navigationBarBackButtonHidden(true) // Explicitly hide back button
-            .navigationBarItems(leading: EmptyView()) // Optionally remove the back button by adding an empty view
-            .blur(radius: showPopup ? 10 : 0) // Blur the background when popup is shown
-            .overlay(
-                // Popup overlay
-                ZStack {
-                    if showPopup {
-                        Color.black.opacity(0.4)
-                            .edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                                // Hide the popup when tapping outside of it
-                                showPopup.toggle()
-                            }
-                        VStack {
-                            HStack {
-                                Spacer()
-                                Button(action: {
-                                    // Close the popup
-                                    showPopup.toggle()
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .resizable()
-                                        .frame(width: 30, height: 30)
-                                        .foregroundColor(.black)
-                                        .padding(8)
-                                }
-                            }
-
-                            HStack {
-                                Text("What is")
-                                    .font(.title)
-                                    .foregroundColor(.black)
-                                HStack {
-                                    Circle()
-                                        .fill(getColor(for: category))  // Call the helper function to get the color
-                                        .frame(width: 20, height: 20)
-                                        .padding(2.0)
-                                    Text("\(category)")
-                                        .foregroundColor(.black)
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .padding(5.0)
-                                }
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(20)
-                                
-                                Text("?")
-                                    .font(.title)
-                                    .foregroundColor(.black)
-                            }
-                            getDescription(for: category)
-                                .padding()
-                            Button(action: {
-                                // Action to perform when the button is tapped
-                                openExternalLink(urlString: getLink(for: category))
-                            }) {
-                                Text("Learn More")
-                                    .padding()
-                                    .background(getColor(for: category))
-                                    .foregroundColor(.white)
-                                    .cornerRadius(8)
-                            }
-                        }
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
+            
+            // Navigation Buttons Section
+            HStack(spacing: 55) {
+                Button(action: {
+                    onHome()
+                }) {
+                    VStack {
+                        Image(systemName: "house")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 50)
+                        Text("Home")
                     }
                 }
-            )
-            .onAppear {
-                // Call the predict function when the view appears
-                Task {
-                    do {
-                        let predictedCategory = try await predict(photo: selectedImage)
-                        category = predictedCategory
-                        
-                        let predictedProbabilities = try await getProbabilities(photo: selectedImage)
-                        probabilities = predictedProbabilities
-                    } catch {
-                        print("Prediction error: \(error)")
+                .sheet(isPresented: $showShareSheet) {
+                    // Display ShareSheet with the selected image
+                    ShareSheet(items: [selectedImage])
+                }
+                
+                Button(action: {
+                    onRetake()
+                }) {
+                    VStack {
+                        Image(systemName: "arrow.counterclockwise")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 50)
+                        Text("Retake")
                     }
+                }
+                .sheet(isPresented: $showShareSheet) {
+                    // Display ShareSheet with the selected image
+                    ShareSheet(items: [selectedImage])
+                }
+                
+                // Share Button
+                Button(action: {
+                    // Trigger the ShareSheet when the Share button is tapped
+                    showShareSheet.toggle()
+                }) {
+                    VStack {
+                        Image(systemName: "square.and.arrow.up")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 50)
+                        Text("Share")
+                    }
+                }
+                .sheet(isPresented: $showShareSheet) {
+                    // Display ShareSheet with the selected image
+                    ShareSheet(items: [selectedImage])
+                }
+            }.tint(getColor(for: category))
+        }
+        .padding()
+        .navigationBarBackButtonHidden(true) // Explicitly hide back button
+        .navigationBarItems(leading: EmptyView()) // Optionally remove the back button by adding an empty view
+        .blur(radius: showPopup ? 10 : 0) // Blur the background when popup is shown
+        .sheet(isPresented: $showPopup) {
+            // Popup overlay
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        // Close the popup
+                        showPopup.toggle()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.black)
+                            .padding(8)
+                    }
+                }
+                Spacer()
+                
+                HStack {
+                    Text("What is")
+                        .font(.title)
+                        .foregroundColor(.black)
+                    HStack {
+                        Circle()
+                            .fill(getColor(for: category))  // Call the helper function to get the color
+                            .frame(width: 20, height: 20)
+                            .padding(2.0)
+                        Text("\(category)")
+                            .foregroundColor(.black)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(5.0)
+                    }
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(20)
+                    
+                    Text("?")
+                        .font(.title)
+                        .foregroundColor(.black)
+                }
+                getDescription(for: category)
+                    .padding()
+                Button(action: {
+                    // Action to perform when the button is tapped
+                    openExternalLink(urlString: getLink(for: category))
+                }) {
+                    Text("Learn More")
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(
+                            RoundedRectangle(cornerRadius: 25)
+                                .stroke(Color.white, lineWidth: 2)
+                                .fill(getColor(for: category))
+                        )
+                }
+                Spacer()
+            }
+            .padding()
+        }
+        .onAppear {
+            // Call the predict function when the view appears
+            Task {
+                do {
+                    let predictedCategory = try await predict(photo: selectedImage)
+                    category = predictedCategory
+                    
+                    let predictedProbabilities = try await getProbabilities(photo: selectedImage)
+                    probabilities = predictedProbabilities
+                } catch {
+                    print("Prediction error: \(error)")
                 }
             }
         }
@@ -257,7 +260,7 @@ func getDescription(for category: String) -> some View {
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(10)
                 }.foregroundColor(.black)
-            }
+            }.fixedSize(horizontal: false, vertical: true)
         case "Compost":
             VStack(alignment: .leading, spacing: 10) {
                 Text("• A ").foregroundColor(.black) +
@@ -292,7 +295,7 @@ func getDescription(for category: String) -> some View {
                         .background(Color.green.opacity(0.2))
                         .cornerRadius(10)
                 }.foregroundColor(.black)
-            }
+            }.fixedSize(horizontal: false, vertical: true)
         case "Recyclable":
             VStack(alignment: .leading, spacing: 10) {
                 Text("• A ").foregroundColor(.black) +
@@ -327,7 +330,7 @@ func getDescription(for category: String) -> some View {
                         .background(Color.blue.opacity(0.2))
                         .cornerRadius(10)
                 }.foregroundColor(.black)
-            }
+            }.fixedSize(horizontal: false, vertical: true)
         default:
             Text("Please retake the photo.")
         }
