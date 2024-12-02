@@ -124,6 +124,8 @@ struct ResultsView: View {
                     .padding()
                 getDescription(for: category)
                     .padding()
+                    .background(getColor(for: category))
+                    .padding()
                 Button(action: {
                     openExternalLink(urlString: getLink(for: category))
                 }) {
