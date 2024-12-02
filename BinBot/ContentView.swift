@@ -9,60 +9,69 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedImage: UIImage?
-    @State private var isPresented = false
+    @State private var cameraIsPresented = false
+    @State private var tutorialIsPresented = false
     
     var body: some View {
-        VStack {
-            if let selectedImage {
-                ResultsView(selectedImage: selectedImage, onHome: {
-                    self.selectedImage = nil
-                }, onRetake: {
-                    self.selectedImage = nil
-                    isPresented = true
-                })
-            } else {
-                VStack {
-                    Spacer().frame(height: 50)
-                    Text("Welcome to BinBot!")
-                        .foregroundStyle(.white)
-                        .font(.largeTitle)
-                        .padding()
-                    Button(action: {
-                        isPresented = true
-                    }) {
-                        ZStack {
-                            Circle().fill(Color.black.opacity(0.25)).frame(width: 150)
-                            Image(systemName: "camera")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 100)
-                                .tint(.white)
+        NavigationStack {
+            VStack {
+                if let selectedImage {
+                    ResultsView(selectedImage: selectedImage, onHome: {
+                        self.selectedImage = nil
+                    }, onRetake: {
+                        self.selectedImage = nil
+                        cameraIsPresented = true
+                    })
+                } else {
+                    VStack {
+                        Text("Welcome to BinBot!")
+                            .foregroundStyle(.white)
+                            .font(.largeTitle)
+                            .padding()
+                        Button(action: {
+                            cameraIsPresented = true
+                        }) {
+                            ZStack {
+                                Circle().fill(Color.black.opacity(0.25)).frame(width: 150)
+                                Image(systemName: "camera")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 100)
+                                    .tint(.white)
+                            }
                         }
+                        Spacer().frame(height: 50)
                     }
-                    Spacer().frame(height: 50)
-                }
-                .frame(maxWidth: .infinity)
-                .background(.green)
-                
-                HomeTabsView()
+                    .frame(maxWidth: .infinity)
                     .background(.green)
-                    .foregroundStyle(.white)
-                    .padding()
+                    
+                    HomeTabsView()
+                        .background(.green)
+                        .foregroundStyle(.white)
+                        .padding()
+                }
+            }.sheet(isPresented: $cameraIsPresented) {
+                CameraView { image in
+                    selectedImage = image
+                    cameraIsPresented = false
+                }
+            }.sheet(isPresented: $tutorialIsPresented) {
+                Text("Tutorial goes here!") // TODO: Lian, please add the tutorial view here!
             }
-        }.sheet(isPresented: $isPresented) {
-            CameraView { image in
-                selectedImage = image
-                isPresented = false
+            .toolbar {
+                Button(action: {
+                    tutorialIsPresented = true
+                }, label: {
+                    ZStack {
+                        Circle().fill(Color.black.opacity(0.25))
+                        Image(systemName: "questionmark")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .tint(.white)
+                            .padding(5)
+                    }
+                })
             }
-            /*
-             Text("Take Photo")
-             .padding()
-             .foregroundColor(.white)
-             .background(Color.purple)
-             .cornerRadius(8)
-             }
-             .padding()
-             */
         }
     }
 }
