@@ -13,9 +13,6 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("Welcome to BinBot!")
-                .font(.largeTitle)
-                .padding()
             if let selectedImage {
                 ResultsView(selectedImage: selectedImage, onHome: {
                     self.selectedImage = nil
@@ -24,19 +21,33 @@ struct ContentView: View {
                     isPresented = true
                 })
             } else {
-                Button(action: {
-                    isPresented = true
-                }) {
-                    ZStack {
-                        Circle().fill(Color.yellow).frame(width: 150)
-                        Image(systemName: "camera")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 100)
+                VStack {
+                    Spacer().frame(height: 50)
+                    Text("Welcome to BinBot!")
+                        .foregroundStyle(.white)
+                        .font(.largeTitle)
+                        .padding()
+                    Button(action: {
+                        isPresented = true
+                    }) {
+                        ZStack {
+                            Circle().fill(Color.black.opacity(0.25)).frame(width: 150)
+                            Image(systemName: "camera")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 100)
+                                .tint(.white)
+                        }
                     }
+                    Spacer().frame(height: 50)
                 }
-                Spacer().frame(height: 30)
+                .frame(maxWidth: .infinity)
+                .background(.green)
+                
                 HomeTabsView()
+                    .background(.green)
+                    .foregroundStyle(.white)
+                    .padding()
             }
         }.sheet(isPresented: $isPresented) {
             CameraView { image in
