@@ -9,44 +9,70 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedImage: UIImage?
-    @State private var isPresented = false
+    @State private var cameraIsPresented = false
+    @State private var tutorialIsPresented = false
+    @Binding var showOverlay: Bool
     
     var body: some View {
-        VStack {
-            Text("Welcome to BinBot!")
-                .font(.largeTitle)
-                .padding()
-            if let selectedImage {
-                ResultsView(selectedImage: selectedImage)
-            } else {
+        NavigationStack {
+            VStack {
+                if let selectedImage {
+                    ResultsView(selectedImage: selectedImage, onHome: {
+                        self.selectedImage = nil
+                    }, onRetake: {
+                        self.selectedImage = nil
+                        cameraIsPresented = true
+                    }, showOverlay: $showOverlay)
+                } else {
+                    VStack {
+                        Text("Welcome to BinBot!")
+                            .foregroundStyle(.white)
+                            .font(.largeTitle)
+                            .padding()
+                        Button(action: {
+                            cameraIsPresented = true
+                        }) {
+                            ZStack {
+                                Circle().fill(Color.black.opacity(0.25)).frame(width: 150)
+                                Image(systemName: "camera")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 100)
+                                    .tint(.white)
+                            }
+                        }
+                        Spacer().frame(height: 50)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background(.green)
+                    
+                    HomeTabsView()
+                        .background(.green)
+                        .foregroundStyle(.white)
+                        .padding()
+                }
+            }.sheet(isPresented: $cameraIsPresented) {
+                CameraView { image in
+                    selectedImage = image
+                    cameraIsPresented = false
+                }
+            }.sheet(isPresented: $tutorialIsPresented) {
+                TutorialView()
+            }
+            .toolbar {
                 Button(action: {
-                    isPresented = true
-                }) {
+                    tutorialIsPresented = true
+                }, label: {
                     ZStack {
-                        Circle().fill(Color.yellow).frame(width: 150)
-                        Image(systemName: "camera")
+                        Circle().fill(Color.black.opacity(0.25))
+                        Image(systemName: "questionmark")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 100)
+                            .tint(.white)
+                            .padding(5)
                     }
-                }
-                Spacer().frame(height: 30)
-                HomeTabsView()
+                })
             }
-        }.sheet(isPresented: $isPresented) {
-            CameraView { image in
-                selectedImage = image
-                isPresented = false
-            }
-            /*
-             Text("Take Photo")
-             .padding()
-             .foregroundColor(.white)
-             .background(Color.purple)
-             .cornerRadius(8)
-             }
-             .padding()
-             */
         }
     }
 }
@@ -78,5 +104,5 @@ struct ContentView: View {
             .navigationBarBackButtonHidden(true)*/
 
 #Preview {
-    ContentView()
+    //ContentView(showOverlay: $showOverlay)
 }

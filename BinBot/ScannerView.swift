@@ -5,7 +5,7 @@
 //  Created by Lian Elsa Linton on 11/17/24.
 //
 
-import UIKit
+/*import UIKit
 import SwiftUICore
 import SwiftUI
 
@@ -52,3 +52,4 @@ struct ScannerView: View {
     ScannerView(/*category: "Recycling"*/)
 }
 
+*/

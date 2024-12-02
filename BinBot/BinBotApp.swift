@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct BinBotApp: App {
+    @State private var showOverlay: Bool = true
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(showOverlay: $showOverlay)
                 .background(Color.white)
                 .ignoresSafeArea()
         }
