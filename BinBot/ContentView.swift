@@ -17,7 +17,12 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .padding()
             if let selectedImage {
-                ResultsView(selectedImage: selectedImage)
+                ResultsView(selectedImage: selectedImage, onHome: {
+                    self.selectedImage = nil
+                }, onRetake: {
+                    self.selectedImage = nil
+                    isPresented = true
+                })
             } else {
                 Button(action: {
                     isPresented = true

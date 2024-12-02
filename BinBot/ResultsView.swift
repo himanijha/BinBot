@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ResultsView: View {
     var selectedImage: UIImage // Image passed from ScannerView
+    var onHome: () -> Void
+    var onRetake: () -> Void
     @State private var category: String = ""
     @State private var probabilities: [String: Double] = [:]
     @State private var showShareSheet = false // State to control the display of the ShareSheet
@@ -47,20 +49,32 @@ struct ResultsView: View {
 
                 // Navigation Buttons Section
                 HStack(spacing: 30) {
-                    NavigationLink(destination: ContentView()) {
+                    Button(action: {
+                        onHome()
+                    }) {
                         Text("Home")
                             .padding()
                             .foregroundColor(.white)
-                            .background(Color.blue)
+                            .background(Color.orange)
                             .cornerRadius(8)
                     }
-
-                    NavigationLink(destination: ScannerView()) {
-                        Text("Retake")
+                    .sheet(isPresented: $showShareSheet) {
+                        // Display ShareSheet with the selected image
+                        ShareSheet(items: [selectedImage])
+                    }
+                    
+                    Button(action: {
+                        onRetake()
+                    }) {
+                        Text("Retake Image")
                             .padding()
                             .foregroundColor(.white)
-                            .background(Color.green)
+                            .background(Color.orange)
                             .cornerRadius(8)
+                    }
+                    .sheet(isPresented: $showShareSheet) {
+                        // Display ShareSheet with the selected image
+                        ShareSheet(items: [selectedImage])
                     }
 
                     // Share Button
@@ -170,7 +184,7 @@ struct ResultsView: View {
 
 
 #Preview {
-    ResultsView(/*category: "Recycling",*/ selectedImage: UIImage(named: "paper")!)
+    ResultsView(/*category: "Recycling",*/ selectedImage: UIImage(named: "paper")!, onHome: {}, onRetake: {})
 }
 
 //Takes name of photo as input
