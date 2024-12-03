@@ -56,7 +56,7 @@ struct HomeTabsView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .padding()
+            // .padding()
 
             TabView(selection: $binType) {
                 ForEach(Self.bins) { bin in
