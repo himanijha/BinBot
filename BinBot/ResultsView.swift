@@ -360,11 +360,11 @@ func openExternalLink(urlString: String) {
 func getLink(for category: String) -> String {
     switch category {
     case "Trash":
-        return "https://lacity.gov/residents/trash-recycling"
+        return "https://www.cawrecycles.org/alternative-daily-cover"
     case "Compost":
-        return "https://www.nrdc.org/stories/composting-101"
+        return "https://www.cawrecycles.org/composting/"
     case "Recycling":
-        return "https://how2recycle.info/"
+        return "https://www.cawrecycles.org/californias-recycling-industry"
     default:
         return ""
     }
